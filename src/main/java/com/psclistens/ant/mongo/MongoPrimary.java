@@ -44,13 +44,27 @@ public class MongoPrimary extends Task {
 
             Map repl = (Map) document.get("repl");
 
-            String primary = (String)repl.get("primary");
-            String[] primaryParts = primary.split(":");
+            // If the repl key is not found, then this server is not part of a replica set.
+            if (repl == null) {
 
-            String primaryHost = primaryParts[0];
-            String primaryPort = primaryParts[1];
-            getProject().setNewProperty("mongo.primary.host", primaryHost);
-            getProject().setNewProperty("mongo.primary.port", primaryPort);
+                if (hosts.size() != 1) {
+                    throw new IllegalStateException("Multiple hosts specified, but at least one host reported not being part of a replica (repl key not found in db.serverStatus() command).");
+                }
+
+                // The host map only contains 1 row, assume that is the primary server.
+                Map.Entry<String, Integer> entry = hosts.entrySet().iterator().next();
+
+                getProject().setNewProperty("mongo.primary.host", entry.getKey());
+                getProject().setNewProperty("mongo.primary.port", entry.getValue().toString());
+            } else {
+                String primary = (String) repl.get("primary");
+                String[] primaryParts = primary.split(":");
+
+                String primaryHost = primaryParts[0];
+                String primaryPort = primaryParts[1];
+                getProject().setNewProperty("mongo.primary.host", primaryHost);
+                getProject().setNewProperty("mongo.primary.port", primaryPort);
+            }
         } finally {
             mongoClient.close();
         }
