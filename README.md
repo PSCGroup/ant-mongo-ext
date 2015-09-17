@@ -17,3 +17,16 @@ Properties will then be created and ready for use within the rest of your build 
 ```xml
 <echo message="${mongo.primary.host} ${mongo.primary.port}"/>
 ```
+
+Example build file:
+```xml
+<project name="mongo-ext-test">
+    <taskdef resource="com/psclistens/ant/mongo/ant.properties"/>
+
+    <target name="default">
+        <mongoPrimary db="[server1:27017,server2:27017]"/>
+        <echo message="${mongo.primary.host} ${mongo.primary.port}"/>
+    </target>
+</project>
+
+```
