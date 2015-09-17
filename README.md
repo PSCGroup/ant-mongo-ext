@@ -5,7 +5,7 @@ Copy ant-mongo-ext-1.0.1.jar to the lib directory of your Ant installation.
 
 Add the following line to your ant build file:
 ```xml
-<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+<taskdef resource="com/psclistens/ant/mongo/ant.properties"/>
 ```
 
 Call the new task from within your build:
